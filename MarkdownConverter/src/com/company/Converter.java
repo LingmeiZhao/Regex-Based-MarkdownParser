@@ -55,6 +55,12 @@ public class Converter {
             } else if (canConvertItalic(linedata) == true) {
                 convertToHtml = convertItalic(linedata);
                 html.add(convertToHtml);
+            } else if (canConvertList(linedata) == true) {
+                convertToHtml = convertList(linedata);
+                html.add(convertToHtml);
+            } else if (canConvertLink(linedata) == true) {
+                convertToHtml = convertLink(linedata);
+                html.add(convertToHtml);
             } else {
                 html.add(linedata);
             }
@@ -159,32 +165,19 @@ public class Converter {
         }
     }
 
-    public String convertList(String text){
+    public String convertList(String text) {
         String result = new String();
-        String pattern = "\n\\*(.*)";
+        String pattern = "\\*(.*)";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(text);
-        if(m.find())
-        {
+        if (m.find()) {
             result = "<li>" + m.group(1) + "</li>";
         }
         return result;
     }
 
-    public String convertLink(String text){
-        String result = new String();
-        String pattern = "\\[([^\\[]+)\\]\\(([^\\)]+)\\)";
-        Pattern r = Pattern.compile(pattern);
-        Matcher m = r.matcher(text);
-        if(m.find())
-        {
-            result = "<a href= \"" + m.group(2) + "\"><img src=\"" + m.group(1)+ "\"</a>";
-        }
-        return result;
-    }
-
-    public boolean canConvertParagraph(String text) {
-        String pattern = "\n([^\n]+)\n";
+    public boolean canConvertList(String text) {
+        String pattern = "\\*(.*)";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(text);
         if (m.find()) {
@@ -194,15 +187,65 @@ public class Converter {
         }
     }
 
+    public String convertLink(String text) {
+        String result = new String();
+        String pattern = "\\[([^\\[]+)\\]\\(([^\\)]+)\\)";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(text);
+        if (m.find()) {
+            if (m.start() != 0) {
+                result = text.substring(0, m.start() - 1) + "<a href=\"" + m.group(2) + "\">"
+                        + m.group(1) + "</a>";
+            } else if (m.end() != text.length()) {
+                result = "<a href=\"" + m.group(2) + "\">"
+                        + m.group(1) + "</a>" + text.substring(m.end(), text.length() - 1);
+            } else {
+                result = "<a href=\"" + m.group(2) + "\">"
+                        + m.group(1) + "</a>";
+            }
+        }
+        return result;
+    }
+
+    public boolean canConvertLink(String text) {
+        String pattern = "\\[([^\\[]+)\\]\\(([^\\)]+)\\)";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(text);
+        if (m.find()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String convertImage(String text)
+    {
+        String result = new String();
+        String pattern = ""
+        Pattern r =
+    }
+    public boolean canConvertParagraph(String text) {
+        String pattern = "\n([^\n]+)\n";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(text);
+        if (m.find()) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
     public String convertParagraph(String text) {
         String result = new String();
-        String pattern = "\n([^\n]+)\n";
+        String pattern = "\n([^\n]+\n)";
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(text);
         if (m.find()) {
             result = "<p>" + m.group(1) + "</p>";
         }
         return result;
+
     }
 
     public void writeToFile(String path) {
