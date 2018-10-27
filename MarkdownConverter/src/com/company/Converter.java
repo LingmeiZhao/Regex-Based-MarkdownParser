@@ -99,7 +99,7 @@ public class Converter {
 
     public String convertItalic(String text) {
         String result = new String();
-        String pattern = new String("(\\*|_)(.*?)\\1");
+        String pattern = new String("(\\*)(.*?)\\1");
         Pattern r = Pattern.compile(pattern);
         Matcher m = r.matcher(text);
         if (m.find()) {
@@ -218,12 +218,7 @@ public class Converter {
         }
     }
 
-    public String convertImage(String text)
-    {
-        String result = new String();
-        String pattern = ""
-        Pattern r =
-    }
+
     public boolean canConvertParagraph(String text) {
         String pattern = "\n([^\n]+)\n";
         Pattern r = Pattern.compile(pattern);
